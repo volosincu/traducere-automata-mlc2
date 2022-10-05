@@ -1,0 +1,50 @@
+[
+  {
+    "from": "ro",
+    "to": "ro",
+    "source": "Multumesc frumos",
+    "target": "Multumesc frumos"
+  },
+  {
+    "from": "ro",
+    "to": "en-US",
+    "source": "Multumesc frumos",
+    "target": "Thank you very much"
+  },
+  {
+    "from": "en-US",
+    "to": "it",
+    "source": "Thank you very much",
+    "target": "Grazie mille"
+  },
+  {
+    "from": "it",
+    "to": "de",
+    "source": "Grazie mille",
+    "target": "Vielen Dank für Ihre Aufmerksamkeit."
+  },
+  {
+    "from": "de",
+    "to": "fr",
+    "source": "Vielen Dank für Ihre Aufmerksamkeit.",
+    "target": "Merci de votre attention."
+  },
+  {
+    "from": "fr",
+    "to": "en-US",
+    "source": "Merci de votre attention.",
+    "target": "Thank you for your attention."
+  },
+  {
+    "from": "en-US",
+    "to": "pl",
+    "source": "Thank you for your attention.",
+    "target": "Dziękuję za uwagę."
+  },
+  {
+    "from": "pl",
+    "to": "ro",
+    "source": "Dziękuję za uwagę.",
+    "target": "Vă mulțumim pentru atenție."
+  }
+]
