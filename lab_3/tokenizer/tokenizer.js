@@ -1,12 +1,14 @@
-const utils = require("./utilis")
-const { NODE_TYPES, MAIN_TYPE, Token, NodeToken } = require("./types")
-
 const compose = (...fns) => x => fns.reduceRight((v, f) => f(v), x);
 const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x)
 
-const delimitatori = [",",  ";", '\r', "!", "?", ".","\n", '\t'];
+const delimitatori = [",",  ";", '\r', "!", "?", ".","\n", '\t', ':'];
 
-
+/**
+ * 
+ * @param {*} sign 
+ * @param {*} tokens 
+ * @returns 
+ */
 function tokenize(sign, tokens) {
   const raspuns = tokens.reduce((acc, w, k) => {
     const splited = w.split(sign);
@@ -24,6 +26,11 @@ function tokenize(sign, tokens) {
   return raspuns;
 }
 
+/**
+ * 
+ * @param {*} data 
+ * @returns 
+ */
 function toTokens(data) {
   const initData = data.split(' ');
   const words = initData.reduce((acc, v, i) => {
@@ -39,6 +46,12 @@ function toTokens(data) {
   return textTokenized;
 }
 
+/**
+ * 
+ * @param {*} words 
+ * @param {*} toRemove 
+ * @returns 
+ */
 function normalize(words, toRemove) {
   return words.reduce((acc, v)=>{
     if (toRemove.includes(v)){
