@@ -1,4 +1,4 @@
-
+import {nGram} from 'n-gram';
 
 
 const wordpAppearences = {};
@@ -99,7 +99,46 @@ function computePropositionMLE(corpus, prop) {
 }
 
 
-module.exports = {
+function computeNgramMLE(corpus, prop, n) {
+
+    const ngr = nGram(n)(prop.split(' '));
+
+    const ngramMLE = ngr.reduce((acc, currentNgram)=>{
+        const nmin_n = currentNgram[0];
+
+        //const gr = { pair: currentNgram.join(' '), prob: 1, ratio: '2/2' };
+        const w_pair = currentNgram.join(' ');
+        
+        let counts_w_nmin1 = wordpAppearences[nmin_n];
+        let counts_w_pair = wordpAppearences[w_pair];
+
+        if (!counts_w_nmin1) {
+            counts_w_nmin1 = getWordApparitions(corpus, nmin_n);
+            wordpAppearences[nmin_n] = counts_w_nmin1;
+        }
+        if (!counts_w_pair) {
+            counts_w_pair = getWordApparitions(corpus, w_pair, true);
+            wordpAppearences[w_pair] = counts_w_pair;
+        }
+        const w_nmin1_count__w_n_count = wordpAppearences[w_pair];
+        const w_nmin1_c = wordpAppearences[nmin_n];
+        // Maximum Likelihood Estimate
+
+        let MLE = w_nmin1_count__w_n_count / w_nmin1_c;
+        if (Number.isNaN(MLE)) {
+            MLE = 0.;
+        }
+        acc.mle.push({ pair: `${w_pair}`, prob: MLE, ratio: w_nmin1_count__w_n_count + '/' + w_nmin1_c , gramCount: w_nmin1_count__w_n_count, wordCount: w_nmin1_c});
+
+        return acc;
+    },{ mle: [] });
+
+    // console.log(ngramMLE);
+    return ngramMLE;
+}
+
+export default {
+    computeNgramMLE,
     getWordApparitionsMap,
     computePropositionMLE,
     collectBiGramsAndComputeMLEOnTrainingData

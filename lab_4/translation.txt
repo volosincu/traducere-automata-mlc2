@@ -1,0 +1,20 @@
+[
+  {
+    "from": "ro",
+    "to": "ro",
+    "source": "Nu m-am mirat deci că la vârsta de cincizeci de ani când omul cu pielea bătucită de sare și furtuni se trage spre casă mia fost dat și mie să pun piciorul pe plaja cu nisip fierbinte a insulei din poveste.",
+    "target": "Nu m-am mirat deci că la vârsta de cincizeci de ani când omul cu pielea bătucită de sare și furtuni se trage spre casă mia fost dat și mie să pun piciorul pe plaja cu nisip fierbinte a insulei din poveste."
+  },
+  {
+    "from": "ro",
+    "to": "en-US",
+    "source": "Nu m-am mirat deci că la vârsta de cincizeci de ani când omul cu pielea bătucită de sare și furtuni se trage spre casă mia fost dat și mie să pun piciorul pe plaja cu nisip fierbinte a insulei din poveste. ",
+    "target": "So I was not surprised that at the age of fifty when the man with salt and storm-battered skin was dragging himself home I was also given to set foot on the hot sandy beach of the island in the story."
+  },
+  {
+    "from": "en-US",
+    "to": "ro",
+    "source": "So I was not surprised that at the age of fifty when the man with salt and storm-battered skin was dragging himself home I was also given to set foot on the hot sandy beach of the island in the story.",
+    "target": "Așa că nu m-a surprins că la cincizeci de ani, când omul cu sare și pielea bătută de furtună se târa spre casă, mi-a fost dat să pun și mie piciorul pe plaja cu nisip fierbinte a insulei din poveste."
+  }
+]

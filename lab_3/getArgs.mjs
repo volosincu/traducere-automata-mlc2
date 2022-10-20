@@ -8,7 +8,7 @@
  * @return {Object}
  *
  */
- function getArgs () {
+ export function getArgs () {
     const commands = []
     const args = {}
     process.argv
@@ -36,4 +36,3 @@
     return { args, commands }
   }
   
-  module.exports = { getArgs }

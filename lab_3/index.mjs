@@ -1,7 +1,7 @@
-const fs = require('fs')
-const argsParser = require('./getArgs');
-const ngram = require('./n-grams/index')
-const Tokenizer = require('./tokenizer/tokenizer');
+import fs from 'fs'
+import * as argsParser from './getArgs.mjs';
+import bigram from './n-grams/index.mjs'; 
+import * as Tokenizer from './tokenizer/tokenizer.mjs';
 
 function main() {
     const cmdInput = argsParser.getArgs();
@@ -17,29 +17,37 @@ function main() {
             console.log("remove previous results")
         })
 
-
         const FILE = cmdInput.args.file;
         console.log(" >>>  Citire fisier " + FILE + '\n');
         const CORPUS_RAW = fs.readFileSync(FILE, 'utf8');
 
         const CORPUS_TOKENIZED = Tokenizer.toTokens(CORPUS_RAW);
         
-        const corpusNormalized = Tokenizer.normalize(CORPUS_TOKENIZED, ['\n', '\r', '\n', '?', '!', ',', ':', ';']);
-        //console.log(textNormalized.join(''));
+        const corpusNormalized = Tokenizer.normalize(CORPUS_TOKENIZED, ['\n', '\r', '\n', '?', '!', ',', ':', ';', '„', '”', '(', ')', '”']);
+
+        
+        // fs.writeFile('./corpus/edupedu-stiri-n.txt', corpusNormalized.join(''), err => {
+        //     if (err) {
+        //         console.error(err)
+        //         return
+        //     }
+        //     console.log("\n >>>  Scriere rezultate in ./results.json")
+        // })
+
         const CORPUS_NORMALIZED = corpusNormalized.join('').split('.').map(p=>{
             if (p.trim().length > 0) {
                 return "<s> " + p.trim() + " <e>";
             }
             return '';
         });
-
+        
         console.log(CORPUS_NORMALIZED.slice(4,));
-        const x = ngram.collectBiGramsAndComputeMLEOnTrainingData(CORPUS_NORMALIZED)
+        const x = bigram.collectBiGramsAndComputeMLEOnTrainingData(CORPUS_NORMALIZED)
 
         console.log(x);
         console.log(CORPUS_NORMALIZED.length)
 
-        const VocabularySize = Object.keys(ngram.getWordApparitionsMap()).length / 2;
+        const VocabularySize = Object.keys(bigram.getWordApparitionsMap()).length / 2;
 
 
         console.log(" >>>  Count 0 occurences for smoothing ...")
@@ -55,10 +63,13 @@ function main() {
 
 
         /////////// 
-        // const proposition = "Vorbeau la ceasul de seară cu oameni de ai locului după o bătălie pierdută";
-        const proposition = "Pline de minuni nemaivăzute";
+        const proposition = "Vorbeau la ceasul de seară cu oameni de ai locului după o bătălie pierdută";
+        const proposition1 = "Pline de minuni nemaivăzute";
+
+        // bigram.computeNgramMLE(CORPUS_NORMALIZED, proposition, 4);
+        // bigram.computeNgramMLE(CORPUS_NORMALIZED, proposition1, 3);
         
-        const sentenceProbabilityTable = ngram.computePropositionMLE(CORPUS_NORMALIZED, `<s> ${proposition} </e>`);
+        const sentenceProbabilityTable = bigram.computePropositionMLE(CORPUS_NORMALIZED, `<s> ${proposition} </e>`);
         console.log(sentenceProbabilityTable);
 
         const zeroOccProp = sentenceProbabilityTable.mle.reduce((occ, bigram) => {
@@ -87,6 +98,7 @@ function main() {
             return acc;
         }, 1);
 
+        console.log(proposition);
         console.log("Sentence probability = ", totalProb);
 
         fs.writeFile('./results.json', JSON.stringify(CORPUS_TOKENIZED), err => {

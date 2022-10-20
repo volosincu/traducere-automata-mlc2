@@ -31,7 +31,7 @@ function tokenize(sign, tokens) {
  * @param {*} data 
  * @returns 
  */
-function toTokens(data) {
+ export function toTokens(data) {
   const initData = data.split(' ');
   const words = initData.reduce((acc, v, i) => {
     return [...acc, v, ' ',];
@@ -52,7 +52,7 @@ function toTokens(data) {
  * @param {*} toRemove 
  * @returns 
  */
-function normalize(words, toRemove) {
+ export function normalize(words, toRemove) {
   return words.reduce((acc, v)=>{
     if (toRemove.includes(v)){
       // ignore \r is carriage return (legacy printers)
@@ -64,10 +64,4 @@ function normalize(words, toRemove) {
 
     return [...acc, v];
   }); 
-}
-
-
-module.exports = {
-  toTokens,
-  normalize
 }
