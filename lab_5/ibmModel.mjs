@@ -82,19 +82,34 @@ var dest = ["le chian", "le chat"];
 //console.log(sursa.map(p=>"NULL "+p));
 
 var allignmentDistributionTable = calcAllignmentDistribution(sursa.map(p=>"NULL "+p), dest)
-console.log(allignmentDistributionTable)
-    
+// console.log(allignmentDistributionTable)
+
+
+let tcIter = {};
 sursa.map(p=>"NULL "+p).map((p, i) => {
 	const propozitieSursaWords = p.split(' ');
 	const propozitieDestWords = dest[i].split(' ');
 
-
     const sentanceWordProbabilities = iterTrad(propozitieSursaWords, propozitieDestWords, allignmentDistributionTable);
 	const tc = calcTc(propozitieSursaWords,propozitieDestWords, allignmentDistributionTable, sentanceWordProbabilities);
 
-    console.log(sentanceWordProbabilities);
-	console.log(tc);
+	// console.log(sentanceWordProbabilities);
+	tcIter = tc.reduce((acc, trad)=>{
+		Object.keys(trad).forEach((k)=>{
+			if (acc[k]){
+				acc[k] = acc[k]+trad[k];
+			} else {
+				acc[k] = trad[k];
+			}
+		});
+		return acc;
+	},tcIter);
+
+
 });
+
+
+console.log(tcIter);
 
 
 
