@@ -33,3 +33,12 @@ cd lab_4
 npm i
 node traducere.mjs
 ```
+
+
+To run lab_4 code: 
+```
+cd lab_5
+npm i
+node index.mjs --iter=5
+node index.mjs --iter=7
+```
