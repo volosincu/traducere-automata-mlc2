@@ -10,9 +10,16 @@ function getUnice(text){
     return unice
 }
 
+function getProbabilityTc(tradModel, cps, cpd, total){
+	if (tradModel["NULL"].prob){
+		return tradModel[cps].prob/total;
+	}
+
+	return tradModel[cps][cpd]/total;
+}
+
 function calcTc(propozitieSursaWords, propozitieDestWords, allignmentDistributionTable, sentanceWordProbabilities, debug) {
 	console.log("--- calc Tc ----", propozitieSursaWords, propozitieDestWords);
-	
 	const tradProb = propozitieDestWords.reduce((acc, cpd)=>{
 	if (cpd){
 		// tc(le | NULL) += P(le | NULL)/1  += .333/1.16 = 0.28 
@@ -20,9 +27,10 @@ function calcTc(propozitieSursaWords, propozitieDestWords, allignmentDistributio
 		// tc(le | cat) += P(le | cat)/1 
 		debug ? console.log(" # ", cpd): null;
 		const total = propozitieSursaWords.reduce((acc, cps) => {
-				debug ? console.log("    # ", cps): null;
-				debug ? console.log("    # ", `${allignmentDistributionTable[cps].prob}/${sentanceWordProbabilities[cpd]}`): null;
-				const tc = allignmentDistributionTable[cps].prob/sentanceWordProbabilities[cpd];
+				// debug ? console.log("    # ", cps): null;
+				// debug ? console.log("    # ", `${allignmentDistributionTable[cps].prob}/${sentanceWordProbabilities[cpd]}`): null;
+				console.log(sentanceWordProbabilities)
+				const tc = getProbabilityTc(allignmentDistributionTable, cps, cpd, sentanceWordProbabilities[cpd]);
 				debug ? console.log("    # ", acc) : null;
 				acc[`${cpd}|${cps}`] = tc;
 				return acc;
@@ -51,6 +59,25 @@ function iterTrad(propozitieSursaWords, propozitieDestWords, conexInSursa) {
     },{});
     return tradProb;
 }
+
+
+function iterTrad2(propozitieSursaWords, propozitieDestWords, tradmodel) {
+	const tradProb = propozitieDestWords.reduce((acc, c)=>{
+	console.log(" - ", c)
+	if (c){
+		
+		const total = propozitieSursaWords.reduce((acc, w) => {
+			console.log("     - ", w, tradmodel[w][c])
+			return acc + tradmodel[w][c];
+		}, 0);
+
+		acc[c] = total;
+	}
+    	return acc;
+    },{});
+    return tradProb;
+}
+
 
 
 function iterRecomputeTrad(unice, tc, tradModel) {
@@ -126,14 +153,20 @@ function convertProbabilitiesforIterations(allignmentDistributionTable){
 	return tradModel;
 }
 
-function computeTc(sursa, dest, translationModel){
+function computeTc(sursa, dest, translationModel, itt){
 	let tcIter = {};
 	sursa.map(p=>"NULL "+p).map((p, i) => {
 		const propozitieSursaWords = p.split(' ');
 		const propozitieDestWords = dest[i].split(' ');
+		let sentanceWordProbabilities;
+		if (itt == 1){
+			sentanceWordProbabilities = iterTrad(propozitieSursaWords, propozitieDestWords, translationModel);
+		}
+		if (itt > 1){
+			sentanceWordProbabilities = iterTrad2(propozitieSursaWords, propozitieDestWords, translationModel);
+		}
+		const tc = calcTc(propozitieSursaWords,propozitieDestWords, translationModel, sentanceWordProbabilities, true);
 
-		const sentanceWordProbabilities = iterTrad(propozitieSursaWords, propozitieDestWords, allignmentDistributionTable);
-		const tc = calcTc(propozitieSursaWords,propozitieDestWords, translationModel, sentanceWordProbabilities, false);
 
 		tcIter = tc.reduce((acc, trad)=>{
 			Object.keys(trad).forEach((k) => {
@@ -149,13 +182,8 @@ function computeTc(sursa, dest, translationModel){
 	return tcIter;
 }
 
-
-
-
-
-
-var sursa = ["the dog", "the cat"];
-var dest = ["le chian", "le chat"];
+var sursa = ["the dog", "the cat", "the cat eat the mouse", "I love my dog and my cat", 'this is the cat I love', "I love cake"];
+var dest = ["le chien", "le chat", "le chat mange la souris", "j'aime mon chien et mon chat","c'est le chat que j'aime", "j'aime le gâteau"];
 
 //console.log(sursa.map(p=>"NULL "+p));
 
@@ -167,31 +195,23 @@ var allignmentDistributionTable = calcAllignmentDistribution(sursa.map(p=>"NULL 
 let translationModel = convertProbabilitiesforIterations(allignmentDistributionTable);
 let tcPairs = null;
 
-[1,2].forEach((i)=>{
+console.log(translationModel);
+console.log("-----");
+console.log(allignmentDistributionTable);
+
+[1,2,3,4,5].forEach((i)=>{
 	if (i==1){
-		tcPairs = computeTc(sursa, dest, allignmentDistributionTable);
+		tcPairs = computeTc(sursa, dest, allignmentDistributionTable, i);
 		translationModel = iterRecomputeTrad(unice, tcPairs, translationModel);
 	} else {
-		// tcPairs = computeTc(sursa, dest, translationModel);
-		// translationModel = iterRecomputeTrad(unice, tcPairs, translationModel);
+		tcPairs = computeTc(sursa, dest, translationModel, i);
+		translationModel = iterRecomputeTrad(unice, tcPairs, translationModel);
 	}
 	
 });
 
+console.log("-----");
 console.log(translationModel);
-	console.log("-----");
-	console.log(tcPairs)
-
-
-
-
-
-
-
-// tradModel = iterRecomputeTrad(unice, tcIter, tradModel);
-// console.log(tcIter);
-// console.log("-----");
-// console.log(tradModel)
 
 
 
