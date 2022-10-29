@@ -88,7 +88,7 @@ function iterRecomputeTrad(unice, tc, tradModel) {
 			let total = 0;
 			// Lista de chei pt P(f|e) tradModel pentru recalculare prob 
 			const PWordsKeys = [];
-			for(k in tc) {
+			for(const k in tc) {
 				// console.log("     -rk   ",k);
 				if (k.split('|')[1] && k.split('|')[1] === c) {
 					console.log("     -rk   ", k);
@@ -140,7 +140,7 @@ function calcAllignmentDistribution(sursa,dest) {
 
 function convertProbabilitiesforIterations(allignmentDistributionTable){
 	let tradModel = {};
-	for (Pword in allignmentDistributionTable){
+	for (const Pword in allignmentDistributionTable){
 		// console.log(Pword)
 		
 		const nstruct = allignmentDistributionTable[Pword].unice.reduce((acc, unic)=>{
@@ -182,36 +182,37 @@ function computeTc(sursa, dest, translationModel, itt){
 	return tcIter;
 }
 
-var sursa = ["the dog", "the cat", "the cat eat the mouse", "I love my dog and my cat", 'this is the cat I love', "I love cake"];
-var dest = ["le chien", "le chat", "le chat mange la souris", "j'aime mon chien et mon chat","c'est le chat que j'aime", "j'aime le gâteau"];
 
-//console.log(sursa.map(p=>"NULL "+p));
 
-const allP = sursa.map(p=>"NULL "+p);
-const unice = getUnice(allP);
-var allignmentDistributionTable = calcAllignmentDistribution(sursa.map(p=>"NULL "+p), dest)
-// console.log("conexiuni", allignmentDistributionTable)
+export function ibmModel(nrIteratii) {
 
-let translationModel = convertProbabilitiesforIterations(allignmentDistributionTable);
-let tcPairs = null;
+	var sursa = ["the dog", "the cat", "the cat eat the mouse", "I love my dog and my cat", 'this is the cat I love', "I love cake"];
+	var dest = ["le chien", "le chat", "le chat mange la souris", "j'aime mon chien et mon chat","c'est le chat que j'aime", "j'aime le gâteau"];
 
-console.log(translationModel);
-console.log("-----");
-console.log(allignmentDistributionTable);
+	//console.log(sursa.map(p=>"NULL "+p));
 
-[1,2,3,4,5].forEach((i)=>{
-	if (i==1){
-		tcPairs = computeTc(sursa, dest, allignmentDistributionTable, i);
+	const allP = sursa.map(p=>"NULL "+p);
+	const unice = getUnice(allP);
+
+	var allignmentDistributionTable = calcAllignmentDistribution(sursa.map(p=>"NULL "+p), dest)
+	let translationModel = convertProbabilitiesforIterations(allignmentDistributionTable);
+	let tcPairs = null;
+
+	let i = 1;
+	while (i <= nrIteratii) {
+		if (i==1){
+			tcPairs = computeTc(sursa, dest, allignmentDistributionTable, i);
+		} else {
+			tcPairs = computeTc(sursa, dest, translationModel, i);
+		}
 		translationModel = iterRecomputeTrad(unice, tcPairs, translationModel);
-	} else {
-		tcPairs = computeTc(sursa, dest, translationModel, i);
-		translationModel = iterRecomputeTrad(unice, tcPairs, translationModel);
-	}
-	
-});
+		i++;	
+	};
 
-console.log("-----");
-console.log(translationModel);
+	return translationModel;
+
+}
+
 
 
 
