@@ -35,7 +35,7 @@ node traducere.mjs
 ```
 
 
-To run lab_4 code: 
+To run lab_5 code: 
 ```
 cd lab_5
 npm i
