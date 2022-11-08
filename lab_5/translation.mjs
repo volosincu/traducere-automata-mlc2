@@ -186,8 +186,8 @@ function computeTc(sursa, dest, translationModel, itt){
 
 export function ibmModel(nrIteratii) {
 
-	var sursa = ["the dog", "the cat", "the cat eat the mouse", "I love my dog and my cat", 'this is the cat I love', "I love cake"];
-	var dest = ["le chien", "le chat", "le chat mange la souris", "j'aime mon chien et mon chat","c'est le chat que j'aime", "j'aime le gâteau"];
+	var sursa = ["the dog", "the cat", "the cat eat the mouse", "I love my dog and my cat", 'this is the cat I love', "I love cake", "my cat love eat cake."];
+	var dest  = ["le chien", "le chat", "le chat mange la souris", "j'aime mon chien et mon chat","c'est le chat que j'aime", "j'aime le gâteau", "mon chat aimes mange de gâteau"];
 
 	//console.log(sursa.map(p=>"NULL "+p));
 
